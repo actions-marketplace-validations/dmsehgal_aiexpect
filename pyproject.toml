@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llmexpect"
+version = "0.1.0"
+description = "Assertions for non-deterministic AI text. Drop into pytest and get a Trust Score report."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [{ name = "Deep Sehgal" }]
+keywords = ["llm", "testing", "pytest", "chatbot", "hallucination", "evaluation", "qa", "assertions"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Framework :: Pytest",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+embeddings = ["sentence-transformers>=2.2"]
+anthropic = ["anthropic>=1.0"]
+all = ["sentence-transformers>=2.2", "anthropic>=1.0"]
+dev = ["pytest>=7", "pytest-cov", "ruff", "build", "twine"]
+
+[project.urls]
+Homepage = "https://github.com/deepsehgal/llmexpect"
+Repository = "https://github.com/deepsehgal/llmexpect"
+Issues = "https://github.com/deepsehgal/llmexpect/issues"
+
+[project.scripts]
+llmexpect = "llmexpect.cli:main"
+
+[project.entry-points.pytest11]
+llmexpect = "llmexpect.pytest_plugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llmexpect"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["E501"]

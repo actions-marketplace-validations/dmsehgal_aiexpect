@@ -1,0 +1,24 @@
+"""llmexpect - assertions for non-deterministic AI text.
+
+    from llmexpect import expect
+    expect(reply).to_mean("you can return within 30 days").to_not_contain_pii()
+"""
+from .config import configure, settings
+from .consistency import consistent
+from .expectation import Expectation, ExpectationFailed, expect, expect_ai
+from .results import CheckResult, collector, summarize
+
+__version__ = "0.1.0"
+__all__ = [
+    "CheckResult",
+    "Expectation",
+    "ExpectationFailed",
+    "__version__",
+    "collector",
+    "configure",
+    "consistent",
+    "expect",
+    "expect_ai",
+    "settings",
+    "summarize",
+]

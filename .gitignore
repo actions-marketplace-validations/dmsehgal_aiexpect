@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+.pytest_cache/
+.llmexpect_cache/
+llmexpect-report.html
+llmexpect-report.json
+.DS_Store
+.env
