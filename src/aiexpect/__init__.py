@@ -3,7 +3,7 @@
     from aiexpect import expect
     expect(reply).to_mean("you can return within 30 days").to_not_contain_pii()
 """
-from . import history, snapshots
+from . import history, probes, snapshots
 from .config import configure, settings
 from .consistency import consistent
 from .expectation import Expectation, ExpectationFailed, expect, expect_ai
@@ -21,6 +21,7 @@ __all__ = [
     "expect",
     "expect_ai",
     "history",
+    "probes",
     "snapshots",
     "settings",
     "summarize",
