@@ -1,7 +1,7 @@
 import pytest
 
-from llmexpect import ExpectationFailed, expect
-from llmexpect.backends import judges
+from aiexpect import ExpectationFailed, expect
+from aiexpect.backends import judges
 
 POLICY = "Returns accepted within 30 days. Refunds take 5 business days."
 
@@ -29,9 +29,9 @@ def test_rubric_and_consistent_with():
 
 
 def test_judge_cache_hits(tmp_path):
-    import llmexpect
+    import aiexpect
 
-    llmexpect.settings.cache = True
+    aiexpect.settings.cache = True
     j = judges._judge
     v1 = j.judge("TASK: anything")
     v2 = j.judge("TASK: anything")

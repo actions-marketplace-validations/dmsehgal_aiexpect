@@ -1,6 +1,6 @@
 """Tier 3: LLM-as-judge.
 
-The user always owns the model and the bill. llmexpect never proxies calls;
+The user always owns the model and the bill. aiexpect never proxies calls;
 it talks straight to the provider the user configured. Providers:
 
 * ``ollama:<model>``            local, free, no key   (native /api/chat)
@@ -196,7 +196,7 @@ class AnthropicJudge(Judge):
         try:
             import anthropic  # type: ignore
         except ImportError as e:
-            raise JudgeError("Install the Anthropic SDK: pip install 'llmexpect[anthropic]'") from e
+            raise JudgeError("Install the Anthropic SDK: pip install 'aiexpect[anthropic]'") from e
         self.model = model
         self._client = anthropic.Anthropic()
         self._anthropic = anthropic
@@ -276,7 +276,7 @@ def _ollama_first_model() -> str:
 def get_judge() -> Judge:
     """Return the configured judge, auto-detecting one if none was set.
 
-    Order: explicit ``configure(judge=...)`` / ``LLMEXPECT_JUDGE`` -> ANTHROPIC_API_KEY
+    Order: explicit ``configure(judge=...)`` / ``AIEXPECT_JUDGE`` -> ANTHROPIC_API_KEY
     -> OPENAI_API_KEY -> a running Ollama with at least one model.
     """
     global _judge, _resolved
@@ -297,10 +297,10 @@ def get_judge() -> Judge:
     if _judge is None:
         raise JudgeError(
             "This assertion needs an LLM judge and none is configured. Options:\n"
-            "  - run Ollama locally (free):  ollama pull llama3.1  then  LLMEXPECT_JUDGE=ollama:llama3.1\n"
-            "  - export ANTHROPIC_API_KEY (pip install 'llmexpect[anthropic]')\n"
+            "  - run Ollama locally (free):  ollama pull llama3.1  then  AIEXPECT_JUDGE=ollama:llama3.1\n"
+            "  - export ANTHROPIC_API_KEY (pip install 'aiexpect[anthropic]')\n"
             "  - export OPENAI_API_KEY\n"
-            "  - or in conftest.py: llmexpect.configure(judge='openai-compatible:<model>@<base_url>')"
+            "  - or in conftest.py: aiexpect.configure(judge='openai-compatible:<model>@<base_url>')"
         )
     _resolved = True
     return _judge

@@ -5,8 +5,8 @@ dist/
 build/
 .venv/
 .pytest_cache/
-.llmexpect_cache/
-llmexpect-report.html
-llmexpect-report.json
+.aiexpect_cache/
+aiexpect-report.html
+aiexpect-report.json
 .DS_Store
 .env

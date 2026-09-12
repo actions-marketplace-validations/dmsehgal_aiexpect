@@ -1,9 +1,9 @@
-"""``llmexpect`` command line.
+"""``aiexpect`` command line.
 
-    llmexpect report llmexpect-report.json          # re-render HTML from JSON
-    llmexpect summary llmexpect-report.json         # print Trust Score to stdout
-    llmexpect check "some text" --mean "expected"   # one-off assertion from the shell
-    llmexpect judge                                 # show which judge would be used
+    aiexpect report aiexpect-report.json          # re-render HTML from JSON
+    aiexpect summary aiexpect-report.json         # print Trust Score to stdout
+    aiexpect check "some text" --mean "expected"   # one-off assertion from the shell
+    aiexpect judge                                 # show which judge would be used
 """
 from __future__ import annotations
 
@@ -15,13 +15,13 @@ from . import __version__
 
 
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(prog="llmexpect", description="Assertions for non-deterministic AI text")
-    p.add_argument("--version", action="version", version=f"llmexpect {__version__}")
+    p = argparse.ArgumentParser(prog="aiexpect", description="Assertions for non-deterministic AI text")
+    p.add_argument("--version", action="version", version=f"aiexpect {__version__}")
     sub = p.add_subparsers(dest="cmd")
 
     r = sub.add_parser("report", help="Render an HTML report from a JSON report")
     r.add_argument("json_path")
-    r.add_argument("-o", "--output", default="llmexpect-report.html")
+    r.add_argument("-o", "--output", default="aiexpect-report.html")
 
     s = sub.add_parser("summary", help="Print the Trust Score from a JSON report")
     s.add_argument("json_path")

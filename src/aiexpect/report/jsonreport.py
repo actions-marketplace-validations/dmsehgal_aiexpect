@@ -12,7 +12,7 @@ def build_payload(results: List[CheckResult], meta: Dict[str, Any] = None) -> Di
     from .. import __version__
 
     return {
-        "tool": "llmexpect",
+        "tool": "aiexpect",
         "version": __version__,
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "python": platform.python_version(),

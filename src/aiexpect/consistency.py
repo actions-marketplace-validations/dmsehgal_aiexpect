@@ -1,6 +1,6 @@
 """Run a test body several times and pass on a pass-rate, not a single sample.
 
-    @llmexpect.consistent(samples=5, min_pass_rate=0.8)
+    @aiexpect.consistent(samples=5, min_pass_rate=0.8)
     def test_refund_policy(bot):
         expect(bot.ask("refund policy?")).to_mean("30-day returns")
 
@@ -54,7 +54,7 @@ def consistent(samples: int = 5, min_pass_rate: float = 0.8) -> Callable:
                     f"required {min_pass_rate:.0%}\n" + "\n".join("  " + f for f in failures)
                 )
 
-        wrapper.__llmexpect_consistent__ = {"samples": samples, "min_pass_rate": min_pass_rate}  # type: ignore[attr-defined]
+        wrapper.__aiexpect_consistent__ = {"samples": samples, "min_pass_rate": min_pass_rate}  # type: ignore[attr-defined]
         return wrapper
 
     return deco

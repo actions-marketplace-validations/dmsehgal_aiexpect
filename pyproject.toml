@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "llmexpect"
+name = "aiexpect"
 version = "0.1.0"
 description = "Assertions for non-deterministic AI text. Drop into pytest and get a Trust Score report."
 readme = "README.md"
@@ -34,18 +34,18 @@ all = ["sentence-transformers>=2.2", "anthropic>=1.0"]
 dev = ["pytest>=7", "pytest-cov", "ruff", "build", "twine"]
 
 [project.urls]
-Homepage = "https://github.com/deepsehgal/llmexpect"
-Repository = "https://github.com/deepsehgal/llmexpect"
-Issues = "https://github.com/deepsehgal/llmexpect/issues"
+Homepage = "https://github.com/deepsehgal/aiexpect"
+Repository = "https://github.com/deepsehgal/aiexpect"
+Issues = "https://github.com/deepsehgal/aiexpect/issues"
 
 [project.scripts]
-llmexpect = "llmexpect.cli:main"
+aiexpect = "aiexpect.cli:main"
 
 [project.entry-points.pytest11]
-llmexpect = "llmexpect.pytest_plugin"
+aiexpect = "aiexpect.pytest_plugin"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/llmexpect"]
+packages = ["src/aiexpect"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

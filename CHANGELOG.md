@@ -7,5 +7,5 @@
   (Ollama, Anthropic, OpenAI, OpenAI-compatible) with on-disk verdict cache.
 - `@consistent(samples, min_pass_rate)` for non-deterministic tests.
 - pytest plugin: auto-loaded, Trust Score terminal summary, HTML + JSON report,
-  `--llmexpect-min-trust` CI gate.
-- `llmexpect` CLI: `check`, `report`, `summary`, `judge`.
+  `--aiexpect-min-trust` CI gate.
+- `aiexpect` CLI: `check`, `report`, `summary`, `judge`.

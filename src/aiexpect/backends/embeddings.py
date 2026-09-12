@@ -2,7 +2,7 @@
 
 If ``sentence-transformers`` is installed we use a small local model
 (all-MiniLM-L6-v2, ~80 MB, CPU is fine). Otherwise we fall back to a purely
-lexical similarity so ``pip install llmexpect`` works with zero extra
+lexical similarity so ``pip install aiexpect`` works with zero extra
 dependencies. The fallback is honest about being lexical: it reports its own
 default threshold and the report labels which backend produced each score.
 """
@@ -111,9 +111,9 @@ def get_backend():
             raise
         if not _warned:
             warnings.warn(
-                "llmexpect: sentence-transformers is not installed, using the lexical "
+                "aiexpect: sentence-transformers is not installed, using the lexical "
                 "similarity fallback. For real semantic matching run: "
-                "pip install 'llmexpect[embeddings]'",
+                "pip install 'aiexpect[embeddings]'",
                 stacklevel=2,
             )
             _warned = True

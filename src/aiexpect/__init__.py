@@ -1,6 +1,6 @@
-"""llmexpect - assertions for non-deterministic AI text.
+"""aiexpect - assertions for non-deterministic AI text.
 
-    from llmexpect import expect
+    from aiexpect import expect
     expect(reply).to_mean("you can return within 30 days").to_not_contain_pii()
 """
 from .config import configure, settings

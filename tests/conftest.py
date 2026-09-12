@@ -1,7 +1,7 @@
 import pytest
 
-import llmexpect
-from llmexpect.backends import judges
+import aiexpect
+from aiexpect.backends import judges
 
 
 class FakeJudge(judges.Judge):
@@ -25,8 +25,8 @@ def _offline_config(tmp_path, monkeypatch):
     # Force the zero-dependency backends and a fake judge so the suite never hits the network.
     monkeypatch.setattr(judges, "_judge", FakeJudge())
     monkeypatch.setattr(judges, "_resolved", True)
-    llmexpect.settings.embeddings = "lexical"
-    llmexpect.settings.cache_dir = str(tmp_path / "cache")
-    from llmexpect.backends import embeddings
+    aiexpect.settings.embeddings = "lexical"
+    aiexpect.settings.cache_dir = str(tmp_path / "cache")
+    from aiexpect.backends import embeddings
     embeddings.reset()
     yield

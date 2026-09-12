@@ -1,6 +1,6 @@
 import pytest
 
-from llmexpect import ExpectationFailed, expect
+from aiexpect import ExpectationFailed, expect
 
 
 def test_contains_and_not_contains():

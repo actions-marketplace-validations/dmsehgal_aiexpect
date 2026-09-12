@@ -1,6 +1,6 @@
 """The ``expect()`` API.
 
-    from llmexpect import expect
+    from aiexpect import expect
 
     expect(reply).to_mean("you can return items within 30 days")
     expect(reply).to_be_grounded_in(policy_doc).to_not_contain_pii()
@@ -25,7 +25,7 @@ from .results import CheckResult, collector
 
 
 class ExpectationFailed(AssertionError):
-    """Raised when an llmexpect assertion fails."""
+    """Raised when an aiexpect assertion fails."""
 
 
 def _preview(text: str, n: Optional[int] = None) -> str:

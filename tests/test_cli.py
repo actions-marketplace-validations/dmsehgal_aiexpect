@@ -1,7 +1,7 @@
 
-from llmexpect import collector, expect
-from llmexpect.cli import main
-from llmexpect.report import write_json
+from aiexpect import collector, expect
+from aiexpect.cli import main
+from aiexpect.report import write_json
 
 
 def test_cli_check(capsys):

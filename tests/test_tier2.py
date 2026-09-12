@@ -1,6 +1,6 @@
 import pytest
 
-from llmexpect import ExpectationFailed, expect
+from aiexpect import ExpectationFailed, expect
 
 
 def test_mean_lexical_backend():

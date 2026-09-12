@@ -3,8 +3,8 @@ import random
 
 import pytest
 
-from llmexpect import collector, consistent, expect, summarize
-from llmexpect.report import build_payload, render_html
+from aiexpect import collector, consistent, expect, summarize
+from aiexpect.report import build_payload, render_html
 
 
 def test_consistent_passes_on_rate():
