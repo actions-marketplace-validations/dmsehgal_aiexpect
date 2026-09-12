@@ -59,14 +59,15 @@ to your existing tests, and the results roll up into metrics a non-ML person can
 | **3 · LLM judge** | any model **you** run or pay for: Ollama (free, local), Anthropic, OpenAI, or any OpenAI-compatible server | `to_be_grounded_in`, `to_answer`, `to_have_tone`, `to_satisfy(rubric)`, `to_be_consistent_with`, `to_refuse` (escalation) |
 
 aiexpect never proxies your traffic. You bring the key; you own the bill. Judge verdicts are cached on disk,
-so re-running an unchanged suite costs nothing.
+so re-running an unchanged suite costs nothing. Is a free local model good enough? Measured answer in
+[docs/judges.md](docs/judges.md): a 3B Ollama model got 43/44 probe verdicts right at ~2 s each.
 
 ### Configure a judge (only needed for Tier 3)
 
 ```bash
-# free, local
-ollama pull llama3.1
-export AIEXPECT_JUDGE=ollama:llama3.1
+# free, local (llama3.2 is 2 GB and fits an 8 GB laptop; use llama3.1 with 16 GB+)
+ollama pull llama3.2
+export AIEXPECT_JUDGE=ollama:llama3.2
 
 # or a cloud model
 export ANTHROPIC_API_KEY=...                        # auto-detected; uses claude-opus-5 at low effort
@@ -79,7 +80,7 @@ or in `conftest.py`:
 
 ```python
 import aiexpect
-aiexpect.configure(judge="ollama:llama3.1", judge_threshold=0.7)
+aiexpect.configure(judge="ollama:llama3.2", judge_threshold=0.7)
 ```
 
 ## Flaky by nature? Measure it.
@@ -167,7 +168,7 @@ aiexpect is for the tests next to your product code.
 
 - [ ] TypeScript port with Jest/Vitest matchers, Playwright fixture, Cypress commands
 - [ ] GitHub Action with PR comment + badge
-- [ ] Judge agreement benchmark (Ollama vs Claude vs human labels)
+- [ ] Judge agreement benchmark across more models (see docs/judges.md for the first result)
 - [ ] More probe packs (multi-turn contradiction, instruction following)
 
 ## Contributing

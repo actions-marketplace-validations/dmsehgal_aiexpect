@@ -1,5 +1,5 @@
 """Example suite. Run:  cd examples && pytest -v
-Tier 3 assertions need a judge (e.g. AIEXPECT_JUDGE=ollama:llama3.1); they are
+Tier 3 assertions need a judge (e.g. AIEXPECT_JUDGE=ollama:llama3.2); they are
 skipped automatically when none is configured so the example runs anywhere."""
 import pytest
 from support_bot import POLICY

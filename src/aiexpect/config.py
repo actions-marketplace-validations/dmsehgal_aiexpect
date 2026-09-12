@@ -1,10 +1,11 @@
 """Global configuration. Everything has an environment-variable fallback so CI
 can be configured without touching test code.
 
-    AIEXPECT_JUDGE       provider:model, e.g. ``ollama:llama3.1``,
+    AIEXPECT_JUDGE       provider:model, e.g. ``ollama:llama3.2``,
                           ``anthropic:claude-opus-5``, ``openai:gpt-4o-mini``,
                           ``openai-compatible:my-model@http://host:8000/v1``
     AIEXPECT_EMBEDDINGS  ``auto`` (default), ``lexical`` or a sentence-transformers model name
+    AIEXPECT_JUDGE_TIMEOUT  seconds per judge call (default 300; local models load on first call)
     AIEXPECT_CACHE       ``0`` to disable the on-disk judge cache
     AIEXPECT_CACHE_DIR   where cached judge verdicts live (default ``.aiexpect_cache``)
     AIEXPECT_SNAPSHOT_DIR  where semantic snapshots live (default ``__aisnapshots__``)
@@ -28,6 +29,7 @@ class Settings:
     cache: bool = True
     cache_dir: str = ".aiexpect_cache"
     ollama_host: str = "http://localhost:11434"
+    judge_timeout: float = 300.0                   # seconds per judge call (first call also loads the model)
     text_preview_chars: int = 400                  # how much text the report keeps per check
     snapshot_dir: str = "__aisnapshots__"
     snapshot_mode: str = "auto"                    # auto: create missing | strict: fail on missing | update: overwrite
@@ -47,6 +49,9 @@ class Settings:
         s.snapshot_dir = os.environ.get("AIEXPECT_SNAPSHOT_DIR", "__aisnapshots__")
         s.snapshot_mode = os.environ.get("AIEXPECT_SNAPSHOT_MODE", "auto")
         s.history_path = os.environ.get("AIEXPECT_HISTORY", ".aiexpect_history.jsonl")
+        to = os.environ.get("AIEXPECT_JUDGE_TIMEOUT")
+        if to:
+            s.judge_timeout = float(to)
         thr = os.environ.get("AIEXPECT_JUDGE_THRESHOLD")
         if thr:
             s.judge_threshold = float(thr)
@@ -60,7 +65,7 @@ def configure(**kwargs: Any) -> Settings:
     """Override settings at runtime, e.g. in ``conftest.py``::
 
         import aiexpect
-        aiexpect.configure(judge="ollama:llama3.1", judge_threshold=0.6)
+        aiexpect.configure(judge="ollama:llama3.2", judge_threshold=0.6)
     """
     from .backends import embeddings, judges  # local import to avoid cycles
 

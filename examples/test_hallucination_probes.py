@@ -1,7 +1,7 @@
 """Run the built-in hallucination probe pack against your bot.
 
 Tier 1 (keyword answer key) works offline. With a judge configured
-(AIEXPECT_JUDGE=ollama:llama3.1) paraphrased corrections are recognised too.
+(AIEXPECT_JUDGE=ollama:llama3.2) paraphrased corrections are recognised too.
 Swap `honest_bot` for your real assistant."""
 import pytest
 

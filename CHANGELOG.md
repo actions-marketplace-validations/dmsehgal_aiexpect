@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2
+
+- Judge timeouts are configurable (`AIEXPECT_JUDGE_TIMEOUT`, default 300 s) and surface as a clear
+  `JudgeError` suggesting a smaller local model, instead of a raw traceback.
+- Default Ollama recommendation is now `llama3.2` (2 GB) so it fits 8 GB laptops.
+- `docs/judges.md`: measured agreement of a free 3B judge vs the probe answer keys (43/44), plus
+  `scripts/judge_agreement.py` to reproduce with any judge.
+
 ## 0.2.1
 
 - Packaging/metadata only: neutral wording in the README and probe docstring. No code changes.

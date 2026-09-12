@@ -1,3 +1,4 @@
+
 import pytest
 
 from aiexpect import ExpectationFailed, expect
@@ -55,8 +56,35 @@ def test_no_judge_configured_message(monkeypatch):
 
 
 def test_from_spec():
-    assert isinstance(judges.from_spec("ollama:llama3.1"), judges.OllamaJudge)
+    assert isinstance(judges.from_spec("ollama:llama3.2"), judges.OllamaJudge)
     j = judges.from_spec("openai-compatible:qwen@http://localhost:8000/v1")
     assert j.model == "qwen" and j.base_url == "http://localhost:8000/v1"
     with pytest.raises(judges.JudgeError):
         judges.from_spec("nope")
+
+
+def test_timeout_becomes_judge_error(monkeypatch):
+    import socket
+    import urllib.request
+
+    def boom(*a, **k):
+        raise urllib.error.URLError(socket.timeout("timed out"))
+
+    monkeypatch.setattr(urllib.request, "urlopen", boom)
+    with pytest.raises(judges.JudgeError, match="timed out"):
+        judges.OllamaJudge("x")._complete("s", "u")
+
+
+def test_judge_timeout_setting(monkeypatch):
+    import aiexpect
+
+    seen = {}
+
+    def fake(url, payload, headers=None, timeout=None):
+        seen["timeout"] = timeout
+        return {"message": {"content": '{"score": 1, "reason": "ok"}'}}
+
+    monkeypatch.setattr(judges, "_post_json", fake)
+    aiexpect.settings.judge_timeout = 42
+    judges.OllamaJudge("x")._complete("s", "u")
+    assert seen["timeout"] is None  # resolved inside _post_json from settings

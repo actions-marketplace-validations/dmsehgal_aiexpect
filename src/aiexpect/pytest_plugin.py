@@ -25,7 +25,7 @@ def pytest_addoption(parser: Any) -> None:
     group.addoption("--aiexpect-report", default="aiexpect-report.html", metavar="PATH", help="HTML report path")
     group.addoption("--aiexpect-json", default="aiexpect-report.json", metavar="PATH", help="JSON report path")
     group.addoption("--aiexpect-no-report", action="store_true", help="Do not write aiexpect reports")
-    group.addoption("--aiexpect-judge", default=None, metavar="SPEC", help="LLM judge, e.g. ollama:llama3.1 or anthropic:claude-opus-5")
+    group.addoption("--aiexpect-judge", default=None, metavar="SPEC", help="LLM judge, e.g. ollama:llama3.2 or anthropic:claude-opus-5")
     group.addoption("--aiexpect-min-trust", type=float, default=None, metavar="N",
                     help="Fail the session if the Trust Score is below N (0-100)")
     group.addoption("--aiexpect-update-snapshots", action="store_true", help="Overwrite semantic snapshots")

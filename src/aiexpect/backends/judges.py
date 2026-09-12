@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 import re
+import socket
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -110,7 +111,8 @@ def _cache_put(key: str, data: Dict[str, Any]) -> None:
         json.dump(data, f)
 
 
-def _post_json(url: str, payload: Dict[str, Any], headers: Optional[Dict[str, str]] = None, timeout: float = 120) -> Dict[str, Any]:
+def _post_json(url: str, payload: Dict[str, Any], headers: Optional[Dict[str, str]] = None, timeout: Optional[float] = None) -> Dict[str, Any]:
+    timeout = settings.judge_timeout if timeout is None else timeout
     req = urllib.request.Request(
         url,
         data=json.dumps(payload).encode(),
@@ -124,13 +126,25 @@ def _post_json(url: str, payload: Dict[str, Any], headers: Optional[Dict[str, st
         body = e.read().decode(errors="replace")[:500]
         raise JudgeError(f"{url} returned HTTP {e.code}: {body}") from e
     except urllib.error.URLError as e:
+        if isinstance(e.reason, socket.timeout):
+            raise JudgeError(_timeout_msg(url, timeout)) from e
         raise JudgeError(f"Could not reach {url}: {e.reason}") from e
+    except (socket.timeout, TimeoutError) as e:
+        raise JudgeError(_timeout_msg(url, timeout)) from e
+
+
+def _timeout_msg(url: str, timeout: float) -> str:
+    return (
+        f"Judge call to {url} timed out after {timeout:.0f}s. If this is a local model, it is probably "
+        "too big for this machine's RAM (an 8B model needs ~6 GB free; try `ollama pull llama3.2` or "
+        "`qwen2.5:3b`). Raise the limit with AIEXPECT_JUDGE_TIMEOUT=600 if you just need more time."
+    )
 
 
 class OllamaJudge(Judge):
     provider = "ollama"
 
-    def __init__(self, model: str = "llama3.1", host: Optional[str] = None) -> None:
+    def __init__(self, model: str = "llama3.2", host: Optional[str] = None) -> None:
         self.model = model
         self.host = (host or settings.ollama_host).rstrip("/")
 
@@ -245,7 +259,7 @@ def from_spec(spec: str) -> Judge:
     provider, rest = spec.split(":", 1)
     provider = provider.strip().lower()
     if provider == "ollama":
-        return OllamaJudge(rest or "llama3.1")
+        return OllamaJudge(rest or "llama3.2")
     if provider == "anthropic":
         return AnthropicJudge(rest or "claude-opus-5")
     if provider == "openai":
@@ -297,7 +311,7 @@ def get_judge() -> Judge:
     if _judge is None:
         raise JudgeError(
             "This assertion needs an LLM judge and none is configured. Options:\n"
-            "  - run Ollama locally (free):  ollama pull llama3.1  then  AIEXPECT_JUDGE=ollama:llama3.1\n"
+            "  - run Ollama locally (free):  ollama pull llama3.2  then  AIEXPECT_JUDGE=ollama:llama3.2\n"
             "  - export ANTHROPIC_API_KEY (pip install 'aiexpect[anthropic]')\n"
             "  - export OPENAI_API_KEY\n"
             "  - or in conftest.py: aiexpect.configure(judge='openai-compatible:<model>@<base_url>')"
