@@ -96,7 +96,7 @@ def _cache_get(key: str) -> Optional[Dict[str, Any]]:
     p = _cache_path(key)
     if os.path.exists(p):
         try:
-            with open(p) as f:
+            with open(p, encoding="utf-8") as f:
                 return json.load(f)
         except (OSError, json.JSONDecodeError):
             return None
@@ -106,7 +106,7 @@ def _cache_get(key: str) -> Optional[Dict[str, Any]]:
 def _cache_put(key: str, data: Dict[str, Any]) -> None:
     p = _cache_path(key)
     os.makedirs(os.path.dirname(p), exist_ok=True)
-    with open(p, "w") as f:
+    with open(p, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
 

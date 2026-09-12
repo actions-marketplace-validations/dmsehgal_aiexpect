@@ -43,7 +43,7 @@ def main(argv=None) -> int:
     if a.cmd == "report":
         from .report import render_html
 
-        with open(a.json_path) as f:
+        with open(a.json_path, encoding="utf-8") as f:
             payload = json.load(f)
         with open(a.output, "w", encoding="utf-8") as f:
             f.write(render_html(payload))
@@ -51,7 +51,7 @@ def main(argv=None) -> int:
         return 0
 
     if a.cmd == "summary":
-        with open(a.json_path) as f:
+        with open(a.json_path, encoding="utf-8") as f:
             s = json.load(f)["summary"]
         trust = s["trust_score"]
         print(f"Trust Score: {trust:.0f}/100" if trust is not None else "Trust Score: n/a")
@@ -78,7 +78,7 @@ def main(argv=None) -> int:
         if a.mean:
             e.to_mean(a.mean)
         if a.grounded_in:
-            ctx = open(a.grounded_in[1:]).read() if a.grounded_in.startswith("@") else a.grounded_in
+            ctx = open(a.grounded_in[1:], encoding="utf-8").read() if a.grounded_in.startswith("@") else a.grounded_in
             e.to_be_grounded_in(ctx)
         if a.answers:
             e.to_answer(a.answers)

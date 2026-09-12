@@ -24,6 +24,6 @@ def build_payload(results: List[CheckResult], meta: Dict[str, Any] = None) -> Di
 
 def write_json(path: str, results: List[CheckResult], meta: Dict[str, Any] = None) -> Dict[str, Any]:
     payload = build_payload(results, meta)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
     return payload

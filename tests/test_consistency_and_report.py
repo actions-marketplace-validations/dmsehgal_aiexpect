@@ -56,5 +56,5 @@ def test_summary_and_html_render(tmp_path):
     html = render_html(payload)
     assert "Trust Score" in html and "to_be_json" in html and "<svg" in html
     p = tmp_path / "r.html"
-    p.write_text(html)
+    p.write_text(html, encoding="utf-8")
     json.dumps(payload)  # must be serialisable
