@@ -34,9 +34,9 @@ all = ["sentence-transformers>=2.2", "anthropic>=1.0"]
 dev = ["pytest>=7", "pytest-cov", "ruff", "build", "twine"]
 
 [project.urls]
-Homepage = "https://github.com/deepsehgal/aiexpect"
-Repository = "https://github.com/deepsehgal/aiexpect"
-Issues = "https://github.com/deepsehgal/aiexpect/issues"
+Homepage = "https://github.com/dmsehgal/aiexpect"
+Repository = "https://github.com/dmsehgal/aiexpect"
+Issues = "https://github.com/dmsehgal/aiexpect/issues"
 
 [project.scripts]
 aiexpect = "aiexpect.cli:main"
