@@ -18,7 +18,7 @@ import time
 from collections.abc import Iterable, Sequence
 from typing import Any, Callable, List, Optional, Union
 
-from . import rules
+from . import rules, snapshots
 from .backends import embeddings, judges
 from .config import settings
 from .results import CheckResult, collector
@@ -205,6 +205,29 @@ class Expectation:
     def to_be_relevant_to(self, question: str, threshold: Optional[float] = None) -> Expectation:
         """Semantically on-topic for ``question`` (Tier 2)."""
         return self._similarity("to_be_relevant_to", "relevance", question, threshold)
+
+    def to_match_snapshot(self, name: Optional[str] = None, threshold: Optional[float] = None) -> "Expectation":
+        """Semantically match a stored snapshot; creates it on first run (Tier 2)."""
+        started = time.time()
+        key = snapshots.snapshot_key(collector.current_test_id, name)
+        stored = snapshots.load(key)
+        mode = settings.snapshot_mode
+        if stored is None or mode == "update":
+            if stored is None and mode == "strict":
+                return self._record("to_match_snapshot", "consistency", 2, False, 0.0,
+                                    f"snapshot {key!r} missing and snapshot mode is strict", started=started, key=key)
+            path = snapshots.save(key, self.text, {"test_id": collector.current_test_id})
+            return self._record("to_match_snapshot", "consistency", 2, True, 1.0,
+                                f"snapshot {'updated' if stored else 'created'}: {path}", started=started,
+                                key=key, created=stored is None)
+        sim = embeddings.similarity(self.text, stored["text"])
+        thr = embeddings.threshold(threshold)
+        backend = embeddings.get_backend().name
+        ok = sim >= thr
+        return self._record("to_match_snapshot", "consistency", 2, ok, sim,
+                            f"similarity to snapshot {sim:.2f} {'meets' if ok else 'fails'} threshold ≥ {thr:.2f} ({backend})"
+                            + ("" if ok else " — run with --aiexpect-update-snapshots if this change is intended"),
+                            expected=stored["text"], started=started, key=key, similarity=sim, threshold=thr, backend=backend)
 
     # ---------------------------------------------------------------- tier 3
     def _judge(self, name: str, category: str, task: str, expected: str = "", threshold: Optional[float] = None, **details: Any) -> Expectation:

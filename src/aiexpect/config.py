@@ -7,6 +7,9 @@ can be configured without touching test code.
     AIEXPECT_EMBEDDINGS  ``auto`` (default), ``lexical`` or a sentence-transformers model name
     AIEXPECT_CACHE       ``0`` to disable the on-disk judge cache
     AIEXPECT_CACHE_DIR   where cached judge verdicts live (default ``.aiexpect_cache``)
+    AIEXPECT_SNAPSHOT_DIR  where semantic snapshots live (default ``__aisnapshots__``)
+    AIEXPECT_SNAPSHOT_MODE ``auto`` (create missing), ``strict`` (fail on missing) or ``update``
+    AIEXPECT_HISTORY     run history file for the trend chart (default ``.aiexpect_history.jsonl``)
 """
 from __future__ import annotations
 
@@ -26,6 +29,10 @@ class Settings:
     cache_dir: str = ".aiexpect_cache"
     ollama_host: str = "http://localhost:11434"
     text_preview_chars: int = 400                  # how much text the report keeps per check
+    snapshot_dir: str = "__aisnapshots__"
+    snapshot_mode: str = "auto"                    # auto: create missing | strict: fail on missing | update: overwrite
+    history_path: str = ".aiexpect_history.jsonl"  # run-over-run Trust Score history ("" disables)
+    history_runs: int = 30                         # how many past runs the trend chart shows
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -37,6 +44,9 @@ class Settings:
         s.ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
         if not s.ollama_host.startswith("http"):
             s.ollama_host = "http://" + s.ollama_host
+        s.snapshot_dir = os.environ.get("AIEXPECT_SNAPSHOT_DIR", "__aisnapshots__")
+        s.snapshot_mode = os.environ.get("AIEXPECT_SNAPSHOT_MODE", "auto")
+        s.history_path = os.environ.get("AIEXPECT_HISTORY", ".aiexpect_history.jsonl")
         thr = os.environ.get("AIEXPECT_JUDGE_THRESHOLD")
         if thr:
             s.judge_threshold = float(thr)

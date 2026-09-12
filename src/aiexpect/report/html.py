@@ -124,6 +124,37 @@ def _histogram(scores: List[float], width: int = 560) -> str:
     return "".join(out)
 
 
+def _trend(history: List[Dict[str, Any]], width: int = 1140) -> str:
+    """Trust Score over the last N runs. Single series: line + markers, direct-labelled ends."""
+    pts = [(i, h["trust_score"]) for i, h in enumerate(history) if h.get("trust_score") is not None]
+    if len(pts) < 2:
+        return '<div class="empty">The trend appears after two or more runs.</div>'
+    top, left, bottom, right = 14, 36, 26, 16
+    h = 180
+    plot_w, plot_h = width - left - right, h - top - bottom
+    n = len(history)
+    def X(i): return left + (plot_w * i / (n - 1) if n > 1 else 0)
+    def Y(v): return top + plot_h - plot_h * v / 100
+    out = [f'<svg viewBox="0 0 {width} {h}" width="100%" role="img" aria-label="Trust Score trend">']
+    for g in (0, 25, 50, 75, 100):
+        out.append(f'<line class="grid" x1="{left}" y1="{Y(g):.1f}" x2="{width - right}" y2="{Y(g):.1f}" stroke-width="1"/>')
+        out.append(f'<text class="muted" x="{left - 6}" y="{Y(g) + 4:.1f}" text-anchor="end">{g}</text>')
+    path = " ".join(f"{'M' if k == 0 else 'L'}{X(i):.1f},{Y(v):.1f}" for k, (i, v) in enumerate(pts))
+    out.append(f'<path d="{path}" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linejoin="round"/>')
+    for i, v in pts:
+        ts = _e(history[i].get("ts", ""))
+        out.append(f'<circle cx="{X(i):.1f}" cy="{Y(v):.1f}" r="4" fill="var(--blue)" stroke="var(--surface)" stroke-width="2"><title>{ts}: Trust Score {v:.0f}</title></circle>')
+    fi, fv = pts[0]
+    li, lv = pts[-1]
+    out.append(f'<text class="val" x="{X(fi) + 6:.1f}" y="{Y(fv) - 8:.1f}">{fv:.0f}</text>')
+    out.append(f'<text class="val" x="{X(li) - 6:.1f}" y="{Y(lv) - 8:.1f}" text-anchor="end">{lv:.0f}</text>')
+    out.append(f'<text class="muted" x="{left}" y="{h - 8}">{_e(history[0].get("ts", ""))}</text>')
+    out.append(f'<text class="muted" x="{width - right}" y="{h - 8}" text-anchor="end">{_e(history[-1].get("ts", ""))} · last {n} runs</text>')
+    out.append(f'<line class="axis" x1="{left}" y1="{top + plot_h}" x2="{width - right}" y2="{top + plot_h}" stroke-width="1"/>')
+    out.append("</svg>")
+    return "".join(out)
+
+
 def render_html(payload: Dict[str, Any]) -> str:
     s = payload["summary"]
     checks = payload["checks"]
@@ -200,6 +231,7 @@ def render_html(payload: Dict[str, Any]) -> str:
   <div><h2>Pass rate by assertion</h2><div class="card">{_bar_chart(by_check)}</div></div>
   <div><h2>Score distribution</h2><div class="card">{_histogram([c["score"] for c in checks])}</div></div>
 </div>
+<h2>Trust Score over time</h2><div class="card">{_trend(payload.get("history", []))}</div>
 <h2>Tests</h2><div class="card" style="padding:0 6px"><table><thead><tr><th>Test</th><th class="num">Checks passed</th><th>Status</th></tr></thead><tbody>{test_rows}</tbody></table></div>
 <h2>Every check</h2>
 <div class="filters"><button class="on" data-f="all">All</button><button data-f="fail">Failed only</button><button data-f="pass">Passed only</button><button data-f="t3">LLM-judged</button></div>

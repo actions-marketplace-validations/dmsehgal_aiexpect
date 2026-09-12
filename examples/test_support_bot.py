@@ -64,3 +64,8 @@ def test_hallucination_is_caught(bot):
 def test_answers_and_tone(bot):
     reply = bot.ask("How long does a refund take?")
     expect(reply).to_answer("How long does a refund take?").to_have_tone("friendly and concise")
+
+
+def test_refund_snapshot(bot):
+    # First run stores the reply; later runs pass as long as the *meaning* is unchanged.
+    expect(bot.ask("What is your refund policy?")).to_match_snapshot()

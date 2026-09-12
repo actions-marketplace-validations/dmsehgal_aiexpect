@@ -10,3 +10,5 @@ aiexpect-report.html
 aiexpect-report.json
 .DS_Store
 .env
+.aiexpect_history.jsonl
+__aisnapshots__/

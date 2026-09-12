@@ -13,6 +13,9 @@ from typing import Any
 
 import pytest
 
+from . import history as history_mod
+from . import snapshots
+from .config import settings
 from .report import build_payload, render_html, write_json
 from .results import CATEGORY_LABELS, collector
 
@@ -25,6 +28,11 @@ def pytest_addoption(parser: Any) -> None:
     group.addoption("--aiexpect-judge", default=None, metavar="SPEC", help="LLM judge, e.g. ollama:llama3.1 or anthropic:claude-opus-5")
     group.addoption("--aiexpect-min-trust", type=float, default=None, metavar="N",
                     help="Fail the session if the Trust Score is below N (0-100)")
+    group.addoption("--aiexpect-update-snapshots", action="store_true", help="Overwrite semantic snapshots")
+    group.addoption("--aiexpect-snapshot-mode", default=None, choices=["auto", "strict", "update"],
+                    help="auto: create missing snapshots, strict: fail on missing (CI), update: overwrite")
+    group.addoption("--aiexpect-history", default=None, metavar="PATH",
+                    help="Run history file for the trend chart (default .aiexpect_history.jsonl; 'none' disables)")
 
 
 def pytest_configure(config: Any) -> None:
@@ -33,6 +41,14 @@ def pytest_configure(config: Any) -> None:
         from .config import configure
 
         configure(judge=spec)
+    if config.getoption("--aiexpect-update-snapshots"):
+        settings.snapshot_mode = "update"
+    elif config.getoption("--aiexpect-snapshot-mode"):
+        settings.snapshot_mode = config.getoption("--aiexpect-snapshot-mode")
+    hist = config.getoption("--aiexpect-history")
+    if hist is not None:
+        settings.history_path = "" if hist.lower() == "none" else hist
+    snapshots.reset_counters()
     config.addinivalue_line("markers", "aiexpect: test uses aiexpect assertions")
 
 
@@ -58,10 +74,12 @@ def pytest_sessionfinish(session: Any, exitstatus: int) -> None:
     config._aiexpect_summary = payload["summary"]  # for terminal summary
     if config.getoption("--aiexpect-no-report"):
         return
+    history_mod.append(payload["summary"])
+    payload["history"] = history_mod.load()
     html_path = config.getoption("--aiexpect-report")
     json_path = config.getoption("--aiexpect-json")
     if json_path:
-        write_json(json_path, results, payload["meta"])
+        write_json(json_path, results, payload["meta"], payload["history"])
     if html_path:
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(render_html(payload))
