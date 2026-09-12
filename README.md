@@ -115,7 +115,7 @@ def test_hallucination_probe(bot, probe):
     probes.check(bot.ask(probe.question), probe)
 ```
 
-22 questions curated to reliably expose fabrication:
+22 curated questions that reliably expose fabrication:
 false premises ("Name the current King of France"), true-but-surprising premises ("Are sharks older than
 trees?") and plain facts. Keyword answer keys work offline; with a judge configured, paraphrased corrections
 are recognised too.
