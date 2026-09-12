@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Packaging/metadata only: neutral wording in the README and probe docstring. No code changes.
+
 ## 0.2.0
 
 - `to_match_snapshot()`: semantic snapshot testing (`--aiexpect-update-snapshots`,
