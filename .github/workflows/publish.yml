@@ -7,8 +7,8 @@ jobs:
     environment: pypi
     permissions: { id-token: write }   # trusted publishing, no API token needed
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with: { python-version: "3.12" }
       - run: pip install build && python -m build
       - uses: pypa/gh-action-pypi-publish@release/v1
