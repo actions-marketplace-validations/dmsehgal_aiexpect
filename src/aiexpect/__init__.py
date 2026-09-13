@@ -9,7 +9,7 @@ from .consistency import consistent
 from .expectation import Expectation, ExpectationFailed, expect, expect_ai
 from .results import CheckResult, collector, summarize
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __all__ = [
     "CheckResult",
     "Expectation",

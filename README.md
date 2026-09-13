@@ -140,7 +140,7 @@ CI gate: `pytest --aiexpect-min-trust=80` fails the run when the Trust Score dro
 
 ```yaml
 - run: pytest --aiexpect-json=aiexpect-report.json
-- uses: dmsehgal/aiexpect@v0.3.0
+- uses: dmsehgal/aiexpect@v0.3.1
   with:
     min-trust: 80          # optional gate
   # needs: permissions: { pull-requests: write }

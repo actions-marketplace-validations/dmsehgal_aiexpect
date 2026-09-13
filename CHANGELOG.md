@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Repository moved to `dmsehgal/aiexpect`; Action reference is now `dmsehgal/aiexpect@v0.3.1`. Added SECURITY.md.
+
 ## 0.3.0
 
 - GitHub Action (`uses: dmsehgal/aiexpect@v0.3.0`): Trust Score as a PR comment + job summary, optional gate.
