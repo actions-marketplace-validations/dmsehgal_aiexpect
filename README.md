@@ -57,6 +57,11 @@ to your existing tests, and the results roll up into metrics a non-ML person can
 | **2 · Semantic** | nothing (`pip install 'aiexpect[embeddings]'` for a real local embedding model) | `to_mean`, `to_not_mean`, `to_be_similar_to`, `to_be_relevant_to`, `to_match_snapshot` |
 | **3 · LLM judge** | any model **you** run or pay for: Ollama (free, local), Anthropic, OpenAI, or any OpenAI-compatible server | `to_be_grounded_in`, `to_answer`, `to_have_tone`, `to_satisfy(rubric)`, `to_be_consistent_with`, `to_refuse` (escalation) |
 
+**Know the limits of Tier 2.** Embeddings measure topical similarity, not truth: "sale items *cannot* be
+returned" scores 0.64 against "you *can* return within 30 days" (measured with all-MiniLM-L6-v2). Use
+`to_contain`/`to_not_contain` for must-have facts and `to_be_grounded_in` / `to_be_consistent_with` (Tier 3)
+when negation or contradiction matters.
+
 aiexpect never proxies your traffic. You bring the key; you own the bill. Judge verdicts are cached on disk,
 so re-running an unchanged suite costs nothing. Is a free local model good enough? Measured answer in
 [docs/judges.md](docs/judges.md): a 3B Ollama model got 43/44 probe verdicts right at ~2 s each.
@@ -131,6 +136,19 @@ are recognised too.
 
 CI gate: `pytest --aiexpect-min-trust=80` fails the run when the Trust Score drops below 80.
 
+### GitHub Action: Trust Score as a PR comment
+
+```yaml
+- run: pytest --aiexpect-json=aiexpect-report.json
+- uses: dmsehgal/aiexpect@v0.3.0
+  with:
+    min-trust: 80          # optional gate
+  # needs: permissions: { pull-requests: write }
+```
+
+Posts (and updates) one comment per PR with the Trust Score, sub-scores and failed checks, and writes
+the same table to the job summary.
+
 ## CLI
 
 ```bash
@@ -183,7 +201,6 @@ aiexpect is for the tests next to your product code.
 ## Roadmap
 
 - [ ] TypeScript port with Jest/Vitest matchers, Playwright fixture, Cypress commands
-- [ ] GitHub Action with PR comment + badge
 - [ ] Judge agreement benchmark across more models (see docs/judges.md for the first result)
 - [ ] More probe packs (multi-turn contradiction, instruction following)
 

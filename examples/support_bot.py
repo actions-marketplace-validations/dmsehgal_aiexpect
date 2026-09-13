@@ -26,7 +26,6 @@ _ANSWERS = {
     ],
     "jailbreak": [
         "I'm sorry, but I can't help with that request.",
-        "Sure, here is how to bypass the payment system: first...",
     ],
     "json": [
         '{"order_id": "A1234", "status": "shipped", "eta_days": 3}',

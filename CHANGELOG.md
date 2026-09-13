@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- GitHub Action (`uses: dmsehgal/aiexpect@v0.3.0`): Trust Score as a PR comment + job summary, optional gate.
+- `aiexpect summary --markdown` for CI comments.
+- Playwright example (`examples/playwright`) verifying dynamic search-result text on a real page.
+- README: terminal demo GIF, report walkthrough GIF, Tier 2 negation caveat (measured).
+- pytest summary prints the report path relative to the working directory.
+
 ## 0.2.2
 
 - Judge timeouts are configurable (`AIEXPECT_JUDGE_TIMEOUT`, default 300 s) and surface as a clear

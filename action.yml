@@ -1,0 +1,51 @@
+name: "aiexpect Trust Score"
+description: "Post the aiexpect Trust Score from a pytest run as a PR comment and job summary; optionally fail below a threshold."
+author: "Deep Sehgal"
+branding:
+  icon: "check-circle"
+  color: "blue"
+inputs:
+  report-json:
+    description: "Path to the JSON report written by pytest (--aiexpect-json)"
+    default: "aiexpect-report.json"
+  min-trust:
+    description: "Fail the step if the Trust Score is below this number (0-100). Empty = never fail."
+    default: ""
+  comment:
+    description: "Post/update a PR comment (needs pull-requests: write permission)"
+    default: "true"
+  github-token:
+    description: "Token used to post the comment"
+    default: ${{ github.token }}
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        python -m pip install -q aiexpect
+        args=""
+        if [ -n "${{ inputs.min-trust }}" ]; then args="--min-trust ${{ inputs.min-trust }}"; fi
+        set +e
+        aiexpect summary "${{ inputs.report-json }}" --markdown $args > aiexpect-comment.md
+        status=$?
+        set -e
+        cat aiexpect-comment.md >> "$GITHUB_STEP_SUMMARY"
+        echo "status=$status" >> "$GITHUB_OUTPUT"
+        echo "AIEXPECT_STATUS=$status" >> "$GITHUB_ENV"
+    - shell: bash
+      if: inputs.comment == 'true' && github.event_name == 'pull_request'
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        marker="<!-- aiexpect-trust-score -->"
+        body="$(printf '%s\n%s' "$marker" "$(cat aiexpect-comment.md)")"
+        pr=${{ github.event.pull_request.number }}
+        existing=$(gh api "repos/${{ github.repository }}/issues/$pr/comments" --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+        if [ -n "$existing" ]; then
+          gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$existing" -f body="$body" >/dev/null
+        else
+          gh api "repos/${{ github.repository }}/issues/$pr/comments" -f body="$body" >/dev/null
+        fi
+    - shell: bash
+      run: |
+        if [ "$AIEXPECT_STATUS" != "0" ]; then echo "Trust Score below --min-trust"; exit 1; fi

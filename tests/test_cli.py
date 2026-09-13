@@ -22,3 +22,14 @@ def test_cli_report_and_summary(tmp_path, capsys):
     assert main(["summary", str(jp)]) == 0
     assert main(["summary", str(jp), "--min-trust", "101"]) == 1
     assert "Trust Score" in capsys.readouterr().out
+
+
+def test_cli_markdown_summary(tmp_path, capsys):
+    collector.clear()
+    expect("x").to_not_be_empty()
+    expect("x", soft=True).to_contain("zzz")
+    jp = tmp_path / "r.json"
+    write_json(str(jp), collector.results())
+    assert main(["summary", str(jp), "--markdown", "--min-trust", "90"]) == 1
+    out = capsys.readouterr().out
+    assert "Trust Score" in out and "| Accuracy |" in out and "Failed checks" in out and "below" in out
