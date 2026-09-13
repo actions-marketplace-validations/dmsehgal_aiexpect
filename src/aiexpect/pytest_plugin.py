@@ -108,4 +108,9 @@ def pytest_terminal_summary(terminalreporter: Any, exitstatus: int, config: Any)
         tr.write_line(f"  FAILED: Trust Score {trust:.0f} is below --aiexpect-min-trust={min_trust:g}", red=True)
     paths = getattr(config, "_aiexpect_paths", None)
     if paths and paths[0]:
-        tr.write_line(f"  report: {os.path.abspath(paths[0])}")
+        full = os.path.abspath(paths[0])
+        try:
+            shown = os.path.relpath(full)
+        except ValueError:  # different drive on Windows
+            shown = full
+        tr.write_line(f"  report: {shown if not shown.startswith('..') else full}")

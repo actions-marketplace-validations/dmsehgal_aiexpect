@@ -11,3 +11,8 @@ aiexpect's core is framework-agnostic: `expect(text)` records `CheckResult`s int
 The pytest plugin (`src/aiexpect/pytest_plugin.py`, ~90 lines) is the reference adapter.
 Wanted next: Robot Framework keywords, behave/pytest-bdd steps, a Playwright-Python fixture.
 The TypeScript port will bring Jest/Vitest matchers, Playwright and Cypress commands.
+
+## Playwright (Python) — done
+
+See `examples/playwright/test_search_results.py`. Nothing to install beyond `pytest-playwright`;
+the `page` fixture gives you the text, `expect()` does the rest, and the pytest plugin writes the report.

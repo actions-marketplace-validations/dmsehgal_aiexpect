@@ -8,6 +8,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/aiexpect.svg)](https://pypi.org/project/aiexpect/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+![aiexpect demo: a Playwright test asserting on dynamic search-result text, then the Trust Score summary](docs/img/demo.gif)
+
 ```python
 from aiexpect import expect
 
@@ -29,10 +31,7 @@ Trust Score: 87/100
   report: /your/project/aiexpect-report.html
 ```
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/report-dark.png">
-  <img alt="aiexpect HTML report: Trust Score, six sub-scores, pass rate by assertion, score distribution" src="docs/img/report-light.png">
-</picture>
+![aiexpect HTML report walkthrough: Trust Score, six sub-scores, charts, trend, per-test table](docs/img/report.gif)
 
 → [Open the sample report](https://dmsehgal.github.io/aiexpect/sample-report.html)
 
@@ -140,6 +139,23 @@ aiexpect report aiexpect-report.json -o report.html
 aiexpect summary aiexpect-report.json --min-trust 80
 aiexpect judge     # which judge would be used?
 ```
+
+## Testing a real web page (Playwright)
+
+```python
+from aiexpect import expect
+
+def test_search_snippet_is_relevant(page):          # `page` comes from pytest-playwright
+    page.goto("https://en.wikipedia.org/w/index.php?fulltext=1&search=python+testing+framework")
+    snippet = page.locator(".mw-search-result .searchresult").first.inner_text()
+
+    expect(snippet).to_be_relevant_to("software testing framework")   # text changes; meaning shouldn't
+    expect(snippet).to_contain_any("test", "testing").to_not_contain_pii()
+```
+
+`pip install pytest-playwright && playwright install chromium`, then `pytest`. Same idea for a chat widget:
+locate the bot's last message bubble and hand its text to `expect()`. Full example in
+[examples/playwright](examples/playwright).
 
 ## Soft mode
 
